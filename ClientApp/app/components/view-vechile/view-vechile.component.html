@@ -1,0 +1,76 @@
+<h1>Vechile</h1>
+<div>
+  <!-- Tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" href="#vechile" data-toggle="tab">Vechile</a></li>
+    <li class="nav-item"><a class="nav-link" href="#photo" data-toggle="tab">Photos</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content" *ngIf="vechile">
+    <!-- Vechile pane -->
+    <div class="tab-pane fade show active" id="vechile">
+      <h2>Basics</h2>
+      <ul>
+        <li>Make: {{ vechile.make.name }}</li>
+        <li>Model: {{ vechile.model.name }}</li>
+        <li>Registered: {{ vechile.isRegistered ? 'Yes' : 'No' }}</li>
+      </ul>
+      <h3>Features</h3>
+      <ul>
+        <li *ngFor="let feature of vechile.features">{{ feature.name }}</li>
+      </ul>
+      <h3>Contact</h3>
+      <ul>
+        <li>Contact Name: {{ vechile.contact.name }}</li>
+        <li>Contact Phone: {{ vechile.contact.phone }}</li>
+        <li>Contact Email: {{ vechile.contact.email }}</li>
+      </ul>
+      <br/>
+      <p>
+        <a *ngIf="authService.isAuthenticated()" [routerLink]="['/vechiles/edit', vechile.id]" class="btn-primary btn">Edit</a>
+        <button *ngIf="authService.isAuthenticated()" (click)="delete()" class="btn-danger btn">Delete</button>
+        <a routerLink="/vechiles" class="btn-info btn">View All Vechiles</a>
+      </p>
+    </div>
+
+    <!-- Photos pane -->
+    <div class="tab-pane fade" id="photo">
+      <h2>Photos</h2>
+      <input *ngIf="authService.isAuthenticated()" type="file" (change)="uploadPhoto()" #fileInput>
+      <div class="progress" *ngIf="progress && progress.percentage < 100">
+        <div class="progress-bar" [style.width]="progress.percentage + '%'">
+          <span class="sr-only">{{ progress.percentage }}% Complete</span>
+        </div>
+      </div>
+      <div class="row">
+        <ng-container *ngFor="let photo of photos">
+          <div class="col-md-4" style="margin-bottom: 10px">
+              <img src="/uploads/{{photo.fileName}}" style="width:100px; height:100px;" class="img-thumbnail card-photo">
+          </div>
+        </ng-container>
+      </div>
+      <div class="col-md-6">
+        <div id="vechilesCarousel" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li *ngFor="let photo of photos; let i = index" [class.active]="i == 0" data-target="#vechilesCarousel" [attr.data-slide-to]="i"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item" *ngFor="let photo of photos; let i = index" [class.active]="i == 0">
+              <img class="d-block w-100" src="/uploads/{{photo.fileName}}" alt="Slide: {{i + 1}}">
+            </div>
+          </div>
+
+          <a href="#vechilesCarousel" class="carousel-control-prev" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a href="#vechilesCarousel" class="carousel-control-next" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

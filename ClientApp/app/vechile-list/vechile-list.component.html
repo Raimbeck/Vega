@@ -1,0 +1,44 @@
+<h1>Vechiles</h1>
+<p *ngIf="authService.isAuthenticated()">
+  <a class="btn btn-primary" routerLink="/vechiles/new">New Vechile</a>
+</p>
+<div class="well">
+  <div class="form-group">
+    <label for="make">Make</label>
+    <select id="make" class="form-control" [(ngModel)]="query.makeId" (change)="onFilterChange()">
+      <option value=""></option>
+      <option [value]="make.id" *ngFor="let make of makes">{{ make.name }}</option>
+    </select>
+  </div>
+  <button class="btn btn-danger" (click)="resetFilter()">Reset</button>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th *ngFor="let c of columns">
+        <div *ngIf="c.isSortable" (click)="sortBy(c.key)">
+            {{ c.title }}
+            <i *ngIf="query.sortBy===c.key" class="fa"
+            [class.fa-sort-asc]="query.isSortAscending"
+            [class.fa-sort-desc]="!query.isSortAscending"
+            ></i>
+        </div>
+        <div *ngIf="!c.isSortable">
+          {{ c.title }}
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let vechile of queryResult.items">
+      <td>{{ vechile.id }}</td>
+      <td>{{ vechile.make.name }}</td>
+      <td>{{ vechile.model.name }}</td>
+      <td>{{ vechile.contact.name }}</td>
+      <td>
+        <a [routerLink]="['/vechiles', vechile.id]">View</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<pagination [total-items]="queryResult.totalItems" [page-size]="query.pageSize" (page-changed)="onPageChange($event)"></pagination>
